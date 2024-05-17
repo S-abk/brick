@@ -112,7 +112,7 @@
                         highScoreElement.textContent = highScore;
                     }
                     alert('Game Over! Your score: ' + score);
-                    document.location.reload();
+                    resetGame();
                 }
             }
         }
@@ -133,7 +133,9 @@
             moveCar();
             moveObstacles();
             detectCollision();
-            requestAnimationFrame(draw);
+            if (menu.style.display === 'none') {
+                requestAnimationFrame(draw);
+            }
         }
 
         document.addEventListener('keydown', (e) => {
@@ -163,6 +165,12 @@
             obstacles = [];
             setInterval(generateObstacle, 2000);
             draw();
+        }
+
+        function resetGame() {
+            menu.style.display = 'flex';
+            canvas.style.display = 'none';
+            obstacles = [];
         }
 
         function resetHighScore() {
