@@ -12,17 +12,42 @@
             height: 100vh;
             background-color: #f0f0f0;
             margin: 0;
+            flex-direction: column;
         }
         #gameCanvas {
             background-color: #000;
+            display: none;
+        }
+        #menu, #scoreboard {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #scoreboard {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
+    <div id="menu">
+        <h1>Brick Racing Game</h1>
+        <button onclick="startGame()">Start Game</button>
+        <button onclick="resetHighScore()">Reset High Score</button>
+    </div>
     <canvas id="gameCanvas" width="300" height="500"></canvas>
+    <div id="scoreboard">
+        <h2>High Score: <span id="highScore">0</span></h2>
+    </div>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const menu = document.getElementById('menu');
+        const highScoreElement = document.getElementById('highScore');
 
         const carWidth = 30;
         const carHeight = 50;
@@ -38,6 +63,8 @@
         let leftPressed = false;
         let rightPressed = false;
         let score = 0;
+        let highScore = localStorage.getItem('highScore') || 0;
+        highScoreElement.textContent = highScore;
 
         function drawCar() {
             ctx.fillStyle = '#ff0000';
@@ -79,6 +106,11 @@
                     carX + carWidth > obstacles[i].x &&
                     carY < obstacles[i].y + obstacleHeight &&
                     carY + carHeight > obstacles[i].y) {
+                    if (score > highScore) {
+                        highScore = score;
+                        localStorage.setItem('highScore', highScore);
+                        highScoreElement.textContent = highScore;
+                    }
                     alert('Game Over! Your score: ' + score);
                     document.location.reload();
                 }
@@ -122,8 +154,22 @@
             }
         });
 
-        setInterval(generateObstacle, 2000);
-        draw();
+        function startGame() {
+            menu.style.display = 'none';
+            canvas.style.display = 'block';
+            score = 0;
+            carX = (canvas.width - carWidth) / 2;
+            carY = canvas.height - carHeight - 10;
+            obstacles = [];
+            setInterval(generateObstacle, 2000);
+            draw();
+        }
+
+        function resetHighScore() {
+            highScore = 0;
+            localStorage.setItem('highScore', highScore);
+            highScoreElement.textContent = highScore;
+        }
     </script>
 </body>
 </html>
