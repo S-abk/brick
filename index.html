@@ -32,12 +32,21 @@
         #scoreboard {
             margin-top: 20px;
         }
+        .difficulty-button {
+            margin: 5px;
+            padding: 8px 16px;
+        }
     </style>
 </head>
 <body>
     <div id="menu">
         <h1>Brick Racing Game</h1>
-        <button onclick="startGame()">Start Game</button>
+        <div id="difficulty">
+            <p>Select Difficulty:</p>
+            <button class="difficulty-button" onclick="startGame('easy')">Easy</button>
+            <button class="difficulty-button" onclick="startGame('medium')">Medium</button>
+            <button class="difficulty-button" onclick="startGame('hard')">Hard</button>
+        </div>
         <button onclick="resetHighScore()">Reset High Score</button>
     </div>
     <canvas id="gameCanvas" width="300" height="500"></canvas>
@@ -58,7 +67,8 @@
 
         const obstacleWidth = 30;
         const obstacleHeight = 50;
-        const obstacleSpeed = 3;
+        let obstacleSpeed = 3;
+        let obstacleInterval = 2000;
         let obstacles = [];
 
         let leftPressed = false;
@@ -157,14 +167,30 @@
             }
         });
 
-        function startGame() {
+        function startGame(difficulty) {
             menu.style.display = 'none';
             canvas.style.display = 'block';
             score = 0;
             carX = (canvas.width - carWidth) / 2;
             carY = canvas.height - carHeight - 10;
             obstacles = [];
-            setInterval(generateObstacle, 2000);
+
+            switch (difficulty) {
+                case 'easy':
+                    obstacleSpeed = 3;
+                    obstacleInterval = 2000;
+                    break;
+                case 'medium':
+                    obstacleSpeed = 5;
+                    obstacleInterval = 1500;
+                    break;
+                case 'hard':
+                    obstacleSpeed = 7;
+                    obstacleInterval = 1000;
+                    break;
+            }
+
+            setInterval(generateObstacle, obstacleInterval);
             draw();
         }
 
