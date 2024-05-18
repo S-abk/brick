@@ -1,3 +1,4 @@
 # brick
-Brick games
+Play ->
+
 https://s-abk.github.io/brick/
