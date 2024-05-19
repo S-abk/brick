@@ -42,16 +42,46 @@
             margin: 5px;
             padding: 8px 16px;
         }
-        .star {
+        .star, .cloud {
             position: absolute;
+        }
+        .star {
             background-color: white;
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
             animation: twinkle 2s infinite ease-in-out;
         }
+        .cloud {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+            height: 60px;
+            width: 200px;
+            opacity: 0.8;
+            animation: moveClouds 30s linear infinite;
+        }
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            width: 100px;
+            height: 80px;
+            border-radius: 50px;
+        }
+        .cloud::before {
+            top: -30px;
+            left: 10px;
+        }
+        .cloud::after {
+            top: -40px;
+            left: 70px;
+        }
         @keyframes twinkle {
             0%, 100% { opacity: 0.5; }
             50% { opacity: 1; }
+        }
+        @keyframes moveClouds {
+            0% { left: -200px; }
+            100% { left: 100vw; }
         }
     </style>
 </head>
@@ -235,7 +265,19 @@
             }
         }
 
+        function createClouds() {
+            for (let i = 0; i < 5; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = 'cloud';
+                cloud.style.top = Math.random() * 50 + 'vh';
+                cloud.style.left = -200 + 'px';
+                cloud.style.animationDuration = Math.random() * 30 + 20 + 's';
+                document.body.appendChild(cloud);
+            }
+        }
+
         createStars();
+        createClouds();
     </script>
 </body>
 </html>
