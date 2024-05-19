@@ -136,8 +136,6 @@
         let obstacleInterval = 2000;
         let obstacles = [];
 
-        let leftPressed = false;
-        let rightPressed = false;
         let score = 0;
         let highScore = localStorage.getItem('highScore') || 0;
         highScoreElement.textContent = highScore;
@@ -153,12 +151,7 @@
         }
 
         function moveCar() {
-            if (leftPressed && carX > 0) {
-                carX -= carSpeed;
-            }
-            if (rightPressed && carX < canvas.width - carWidth) {
-                carX += carSpeed;
-            }
+            carX = Math.max(0, Math.min(carX, canvas.width - carWidth));
         }
 
         function generateObstacle() {
@@ -216,50 +209,19 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') {
-                leftPressed = true;
+                carX = Math.max(carX - carSpeed, 0);
             }
             if (e.key === 'ArrowRight') {
-                rightPressed = true;
+                carX = Math.min(carX + carSpeed, canvas.width - carWidth);
             }
         });
 
-        document.addEventListener('keyup', (e) => {
-            if (e.key === 'ArrowLeft') {
-                leftPressed = false;
-            }
-            if (e.key === 'ArrowRight') {
-                rightPressed = false;
-            }
-        });
-
-        canvas.addEventListener('touchstart', handleTouchStart, false);
         canvas.addEventListener('touchmove', handleTouchMove, false);
 
-        let xDown = null;
-
-        function handleTouchStart(evt) {
-            const firstTouch = evt.touches[0];
-            xDown = firstTouch.clientX;
-        }
-
         function handleTouchMove(evt) {
-            if (!xDown) {
-                return;
-            }
-
-            const xUp = evt.touches[0].clientX;
-            const xDiff = xDown - xUp;
-
-            if (Math.abs(xDiff) > 20) { // detect swipe direction
-                if (xDiff > 0) {
-                    // swipe left
-                    carX = Math.max(carX - 50, 0);
-                } else {
-                    // swipe right
-                    carX = Math.min(carX + 50, canvas.width - carWidth);
-                }
-            }
-            xDown = null;
+            const touchX = evt.touches[0].clientX - canvas.getBoundingClientRect().left;
+            carX = touchX - carWidth / 2;
+            moveCar();
         }
 
         function startGame(difficulty) {
