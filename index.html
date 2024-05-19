@@ -232,6 +232,36 @@
             }
         });
 
+        canvas.addEventListener('touchstart', handleTouchStart, false);
+        canvas.addEventListener('touchmove', handleTouchMove, false);
+
+        let xDown = null;
+
+        function handleTouchStart(evt) {
+            const firstTouch = evt.touches[0];
+            xDown = firstTouch.clientX;
+        }
+
+        function handleTouchMove(evt) {
+            if (!xDown) {
+                return;
+            }
+
+            const xUp = evt.touches[0].clientX;
+            const xDiff = xDown - xUp;
+
+            if (Math.abs(xDiff) > 0) { // detect swipe direction
+                if (xDiff > 0) {
+                    leftPressed = true;
+                    setTimeout(() => leftPressed = false, 100);
+                } else {
+                    rightPressed = true;
+                    setTimeout(() => rightPressed = false, 100);
+                }
+            }
+            xDown = null;
+        }
+
         function startGame(difficulty) {
             menu.style.display = 'none';
             canvas.style.display = 'block';
